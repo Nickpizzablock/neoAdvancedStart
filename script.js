@@ -1,6 +1,44 @@
+const searchCode = "%s"
 console.log("hello world");
 
 const addButton = document.getElementById('addButton');
+const searchInput = document.getElementById('search');
+searchInput.addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+        const searchValue = searchInput.value;
+        console.log(searchValue);
+        
+        const words = searchValue.split(' ');
+        let firstWord = words[0];
+        let restOfText = words.slice(1).join(' ');
+        console.log(firstWord);
+        console.log(restOfText);
+
+        const existingData = JSON.parse(localStorage.getItem('shortcuts')) || {};
+
+        let prefix = existingData[firstWord];
+        console.log(prefix);
+        if (prefix) {
+            // restOfText = restOfText.replace(' ', '+');
+            restOfText = restOfText.replace(/\s+/g, '+');
+            prefix = prefix.replace(searchCode, restOfText);
+            window.location.href = prefix
+        }
+
+    }
+});
+
+function openInNewTab(url) {
+    let link = document.createElement('a');
+    link.href = url;
+    link.target = '_blank';
+    link.rel = 'noopener';
+
+    document.body.appendChild(link);
+    link.click();
+
+    document.body.removeChild(link);
+}
 
 addButton.addEventListener('click', function() {
     console.log("added");
@@ -18,7 +56,11 @@ addButton.addEventListener('click', function() {
     populateDropdown();
 });
 
-populateDropdown();
+window.onload = function() {
+    document.getElementById('search').value = '';
+    populateDropdown();
+};
+// populateDropdown();
 
 function populateDropdown() {
     console.log("populated");
