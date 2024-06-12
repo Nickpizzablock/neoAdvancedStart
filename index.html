@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Website</title>
+</head>
+<body>
+    <h1>Welcome to My Website</h1>
+    <!--Search Bar-->
+    <input autofocus>
+    <!--Add Shortcuts-->
+    <div>
+        <label for="shortcut">Shortcut:</label>
+        <input type="text" id="shortcut" name="shortcut">
+    </div>
+    <div>
+        <label for="website">Website:</label>
+        <input type="text" id="website" name="website">
+    </div>
+    <div>
+        <button id="addButton" type="submit">Add Shortcut</button>
+    </div>
+    <!--Delete Shortcut-->
+    Delete:
+    <select id="selectDelete">
+        <option value="shortcut">Shortcut to Delete</option>
+    </select>
+    <br>
+    <button id="deleteButton" type="submit">Confirm Deletion</button>
+    <!--See Shortcuts-->
+    <table>
+        <tr>
+            <th>Shortcut</th>
+            <th>Website</th>
+        </tr>
+        <tr>
+    </table>
+    <script src="script.js"></script>
+</body>
+</html>
