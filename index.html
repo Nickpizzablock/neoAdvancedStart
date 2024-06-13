@@ -6,41 +6,51 @@
 </head>
 <body>
     <!-- Your existing HTML code here -->
-    <h1>Welcome to My Website</h1>
+    <!-- <h1>Welcome to My Website</h1> -->
     <!--Search Bar-->
     <input id="search" autofocus autocomplete="off">
     <!--Add Shortcuts-->
-    <div>
-        <label for="shortcut">Shortcut:</label>
-        <input type="text" id="shortcut" name="shortcut" autocomplete="off">
-    </div>
-    <div>
-        <label for="website">Website:</label>
-        <input type="text" id="website" name="website" autocomplete="off">
-    </div>
-    <div>
-        <button id="addButton" type="submit">Add Shortcut</button>
-    </div>
-    <!--Delete Shortcut-->
-    Delete:
-    <select id="selectDelete">
-        <option value="shortcut">Shortcut to Delete</option>
-    </select>
-    <br>
-    <button id="deleteButton" type="submit">Confirm Deletion</button>
+    <details>
+        <summary> Click to Add or Delete Shortcuts </summary>
+        <div>
+            <label for="shortcut">Shortcut:</label>
+            <input type="text" id="shortcut" name="shortcut" autocomplete="off">
+        </div>
+        <div>
+            <label for="website">Website:</label>
+            <input type="text" id="website" name="website" autocomplete="off">
+        </div>
+        <div>
+            <button id="addButton" type="submit">Add Shortcut</button>
+        </div>
+        <!--Delete Shortcut-->
+        Delete:
+        <select id="selectDelete">
+            <option value="shortcut">Shortcut to Delete</option>
+        </select>
+        <br>
+        <button id="deleteButton" type="submit">Confirm Deletion</button>
+    </details>
+    
     <!--See Shortcuts-->
-    <table id="shortcutsTable">
-        <tr>
-            <th>Shortcut</th>
-            <th>Website</th>
-        </tr>
-        <tr>
-    </table>
+    <details>
+        <summary> Click to See Shortcuts </summary>
+        <div>
+            <table id="shortcutsTable">
+                <tr>
+                    <th>Shortcut</th>
+                    <th>Website</th>
+                </tr>
+                <tr>
+            </table>
+        </div>
+   
     <!-- Rounded switch -->
-    <label class="switch">
+    <!-- <label class="switch">
         <input type="checkbox">
         <span class="slider round"></span>
-    </label>
+    </label> -->
+    <div id="marble"></div>
     <script src="script.js"></script>
 </body>
 </html>
