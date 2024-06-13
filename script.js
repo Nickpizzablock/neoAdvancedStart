@@ -81,6 +81,27 @@ function populateDropdown() {
         option.value = shortcut;
         selectElement.add(option);
     }
+
+    // Get the table element
+    const table = document.getElementById('shortcutsTable');
+    // Clear the table body
+    table.innerHTML = '';
+
+    // Populate the table with data from local storage
+    let row = table.insertRow();
+    let shortcutCell = row.insertCell();
+    let websiteCell = row.insertCell();
+    shortcutCell.innerHTML = "<b>shortcut</b>";
+    websiteCell.innerHTML = "<b>website</b>";
+
+    for (let shortcut in existingData) {
+        let row = table.insertRow();
+        let shortcutCell = row.insertCell();
+        let websiteCell = row.insertCell();
+
+        shortcutCell.textContent = shortcut;
+        websiteCell.textContent = existingData[shortcut];
+    }
 }
 
 // Get the delete button element
@@ -111,6 +132,20 @@ deleteButton.addEventListener('click', function() {
     event.preventDefault();
 });
 
+document.body.addEventListener('dblclick', function() {
+    // Code to be executed when the background is double clicked
+    console.log("Background double clicked");
+    // Add your logic here
+    if (document.body.style.backgroundColor == "black") {
+        document.body.style.backgroundColor = "white";
+        document.body.style.color = "black";
+    }
+    else {
+        document.body.style.backgroundColor = "black";
+        document.body.style.color = "white";
+
+    }
+});
 // // Get the "Add Shortcut" button element
 // const addButton = document.getElementById('addShortcutButton');
 
