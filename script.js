@@ -1,6 +1,7 @@
 const searchCode = "%s"
 console.log("hello world");
 
+// Search Bar
 const addButton = document.getElementById('addButton');
 const searchInput = document.getElementById('search');
 searchInput.addEventListener('keydown', function(event) {
@@ -8,26 +9,32 @@ searchInput.addEventListener('keydown', function(event) {
         const searchValue = searchInput.value;
         console.log(searchValue);
         
+        // 1st word = search engine
+        // 2nd word = query
         const words = searchValue.split(' ');
         let firstWord = words[0];
         let restOfText = words.slice(1).join(' ');
-        console.log(firstWord);
-        console.log(restOfText);
+        console.log("first word: ", firstWord);
+        console.log("restOfText: ", restOfText);
 
         const existingData = JSON.parse(localStorage.getItem('shortcuts')) || {};
 
         let prefix = existingData[firstWord];
         console.log(prefix);
         if (prefix) {
+            // Manipulate URL for adding search
             // restOfText = restOfText.replace(' ', '+');
             restOfText = restOfText.replace(/\s+/g, '+');
             prefix = prefix.replace(searchCode, restOfText);
-            window.location.href = prefix
+            console.log(prefix);
+            window.location.href = prefix; // Current tab
+            // window.open(prefix); // New tab, requires pop-up removal
         }
 
     }
 });
 
+// Unnecessary i think
 function openInNewTab(url) {
     let link = document.createElement('a');
     link.href = url;

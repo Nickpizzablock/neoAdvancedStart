@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Position Visualizer</title>
+    <style>
+        body { font-family: sans-serif; background: #f0f2f5; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        #controls { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 20px; width: 100%; max-width: 600px; }
+        #visualizer-area { position: relative; width: 200px; height: 400px; background: #333; border-radius: 8px; overflow: hidden; border: 4px solid #222; }
+        #object { position: absolute; width: 60px; height: 30px; background: #00ffcc; left: 70px; border-radius: 4px; transition: top 0.1s linear; box-shadow: 0 0 15px #00ffcc; }
+        .input-group { margin-bottom: 15px; }
+        textarea { width: 100%; height: 80px; margin-top: 5px; box-sizing: border-box; }
+        .timeline-container { width: 100%; max-width: 600px; margin-top: 20px; display: flex; align-items: center; gap: 10px; }
+        input[type="range"] { flex-grow: 1; cursor: pointer; }
+        .stats { font-family: monospace; font-size: 0.9em; color: #555; margin-top: 5px; }
+        button { cursor: pointer; padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 4px; }
+        button:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+
+<div id="controls">
+    <h3>Data Input</h3>
+    <div class="input-group">
+        <label>Upload JSON:</label><br>
+        <input type="file" id="fileInput" accept=".json">
+    </div>
+    <div class="input-group">
+        <label>Or Paste JSON here:</label>
+        <textarea id="textInput" placeholder='{"actions":[{"at":170,"pos":100}, ...]}'></textarea>
+    </div>
+    <button onclick="loadData()">Load & Initialize</button>
+</div>
+
+<div id="visualizer-area">
+    <div id="object" style="top: 50%;"></div>
+</div>
+
+<div class="timeline-container">
+    <button id="playBtn">Play</button>
+    <input type="range" id="timeline" value="0" min="0" step="1">
+    <span id="timeDisplay">0ms</span>
+</div>
+<div class="stats" id="statsDisplay">No data loaded.</div>
+
+<script>
+    let data = [];
+    let isPlaying = false;
+    let currentTime = 0;
+    let maxTime = 0;
+    let animationFrame;
+
+    const obj = document.getElementById('object');
+    const timeline = document.getElementById('timeline');
+    const timeDisplay = document.getElementById('timeDisplay');
+    const statsDisplay = document.getElementById('statsDisplay');
+    const playBtn = document.getElementById('playBtn');
+
+    function loadData() {
+        const text = document.getElementById('textInput').value;
+        try {
+            const parsed = JSON.parse(text);
+            data = parsed.actions.sort((a, b) => a.at - b.at);
+            maxTime = data[data.length - 1].at;
+            timeline.max = maxTime;
+            currentTime = 0;
+            updateVisuals();
+            statsDisplay.innerText = `Loaded ${data.length} actions. Duration: ${maxTime}ms`;
+        } catch (e) {
+            alert("Invalid JSON format. Please ensure it follows the structure: {\"actions\": [...]}");
+        }
+    }
+
+    // Handle File Upload
+    document.getElementById('fileInput').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            document.getElementById('textInput').value = event.target.result;
+            loadData();
+        };
+        reader.readAsText(file);
+    });
+
+    // Handle Timeline Scrubbing
+    timeline.addEventListener('input', () => {
+        currentTime = parseInt(timeline.value);
+        updateVisuals();
+        if (isPlaying) pause();
+    });
+
+    function updateVisuals() {
+        if (data.length === 0) return;
+
+        // Find the points to interpolate between
+        let nextIdx = data.findIndex(d => d.at >= currentTime);
+        let pos = 0;
+
+        if (nextIdx === 0) {
+            pos = data[0].pos;
+        } else if (nextIdx === -1) {
+            pos = data[data.length - 1].pos;
+        } else {
+            const prev = data[nextIdx - 1];
+            const next = data[nextIdx];
+            // Linear Interpolation
+            const ratio = (currentTime - prev.at) / (next.at - prev.at);
+            pos = prev.pos + (next.pos - prev.pos) * ratio;
+        }
+
+        // Map position (assuming 0-100 scale) to pixel height (invert for vertical)
+        // 0 is bottom (370px), 100 is top (0px)
+        const topPx = 370 - (pos / 100 * 370);
+        obj.style.top = `${topPx}px`;
+        // timeDisplay.innerText = `${currentTime}ms`;
+        timeDisplay.innerText = `${Math.floor(currentTime/1000/60)}m${(Math.floor(currentTime/1000))%60}s`;
+        timeline.value = currentTime;
+    }
+
+    function animate() {
+        if (!isPlaying) return;
+        currentTime += 16; // Approx 60fps
+        if (currentTime >= maxTime) {
+            currentTime = maxTime;
+            pause();
+        }
+        updateVisuals();
+        animationFrame = requestAnimationFrame(animate);
+    }
+
+    function pause() {
+        isPlaying = false;
+        playBtn.innerText = "Play";
+        cancelAnimationFrame(animationFrame);
+    }
+
+    playBtn.addEventListener('click', () => {
+        if (isPlaying) {
+            pause();
+        } else {
+            if (currentTime >= maxTime) currentTime = 0;
+            isPlaying = true;
+            playBtn.innerText = "Pause";
+            animate();
+        }
+    });
+</script>
+</body>
+</html>
