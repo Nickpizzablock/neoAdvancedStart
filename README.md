@@ -1,12 +1,3 @@
 # neoAdvancedStart
-
-flaru
-    soundgasm
-    spankbang
-kemono
-coomer
-bunkr-albums
-pornhub
-tokyomotion
-litsome
-hotaudio
+A shortcut manager meant as a browser homepage to get to your content by 
+bypassing search engine home pages
